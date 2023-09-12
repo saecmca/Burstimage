@@ -30,22 +30,32 @@ import java.util.*
 class StitchImage : AppCompatActivity() {
     private lateinit var outputDirectory: File
     lateinit var progress:ProgressDialog
+    lateinit var transactionId:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stitch_image)
 
         outputDirectory = getOutputDirectory()
-        OpenCVLoader.initDebug()
+        transactionId = intent.getStringExtra("transactionId")!!
+        Log.w("transid 1",transactionId)
+        val file=outputDirectory
+        val imageView = findViewById<ImageView>(R.id.iv)
+        Picasso.get()
+            .load(file)
+
+            .memoryPolicy(MemoryPolicy.NO_CACHE)
+            .into(imageView)
+       /* OpenCVLoader.initDebug()
         progress=ProgressDialog.show(this@StitchImage,"Stitch Image","Loading...")
         Handler(Looper.getMainLooper()).postDelayed({
             stitch()
         }, 50)
-
+*/
 
     }
 
     private fun stitch() {
-        val imgBitmap=StitchModel.stitchByTransaction(outputDirectory,"",this)
+        val imgBitmap=StitchModel.stitchByTransaction(outputDirectory,transactionId,this)
 
         if(imgBitmap!=null) {
             val imageView = findViewById<ImageView>(R.id.iv)

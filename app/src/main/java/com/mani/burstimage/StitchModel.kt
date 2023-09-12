@@ -38,7 +38,7 @@ object StitchModel {
                 }
                 for (i in 0 until files.size) {
                     val currentFile=files.get(i)
-                    if (!currentFile.name.contains("_stitch")) {
+                    if (currentFile.name.contains(transactionId) && !currentFile.name.contains("_stitch")) {
                         Log.w("filename",""+currentFile.name)
                         val bitmap = BitmapFactory.decodeFile(currentFile.getAbsolutePath())
                         val imgBitmap= exifInterface(bitmap,currentFile.getAbsolutePath())

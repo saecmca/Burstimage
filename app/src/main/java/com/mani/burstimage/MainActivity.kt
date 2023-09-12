@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -45,7 +47,8 @@ class MainActivity : AppCompatActivity() {
         viewfinder = findViewById<PreviewView>(R.id.viewFinder)
         findViewById<Button>(R.id.reset_button).setOnClickListener {
             btn.isEnabled = true
-            startActivity(Intent(this,StitchImage::class.java))
+            viewfinder.visibility=View.VISIBLE
+            findViewById<ImageView>(R.id.iv_capture).visibility = View.GONE
         }
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -56,10 +59,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
         outputDirectory = getOutputDirectory()
-        /*btn.setOnClickListener {
+        btn.setOnClickListener {
             takePhoto()
-        }*/
-        btn.setOnTouchListener { v, event ->
+        }
+       /* btn.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 // start your timer
                 takePhoto()
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 btn.isEnabled = false
             }
             false
-        }
+        }*/
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -191,13 +194,11 @@ class MainActivity : AppCompatActivity() {
 
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults) {
-                 /*   val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-                    val rotatedBitmap= exifInterface(bitmap,photoFile.absolutePath)*/
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
-                    //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    // timer()
+                    val savedUri = Uri.fromFile(photoFile)
+                    viewfinder.visibility=View.GONE
+                    findViewById<ImageView>(R.id.iv_capture).visibility = View.VISIBLE
+                    findViewById<ImageView>(R.id.iv_capture).setImageURI(savedUri)
 
-                    Log.d(TAG, msg)
                 }
             }
         )
@@ -240,4 +241,6 @@ class MainActivity : AppCompatActivity() {
         matrix.postRotate(angle)
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
+
+
 }
